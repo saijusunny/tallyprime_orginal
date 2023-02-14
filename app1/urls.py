@@ -816,7 +816,9 @@ urlpatterns = [
     # saiju lates
     path('sv_godown/',views.sv_godown,name='sv_godown'),
     path('data_fetch/',views.data_fetch,name='data_fetch'),
-    
+    path('qty_add/',views.qty_add,name='qty_add'), 
+    path('sv_godown_itm/',views.sv_godown_itm,name='sv_godown_itm'),
+    path('stock_godowncrd/',views.stock_godowncrd,name='stock_godowncrd'),
     
     path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
               

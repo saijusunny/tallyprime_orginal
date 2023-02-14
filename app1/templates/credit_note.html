@@ -378,7 +378,7 @@
                                     <tr> 
                                         <td> <input type="hidden" name="rowss" id="rowss" placeholder=0 class="form-control rowss" value=0 step="any" ></td>
                                         <td> <input type="text"class="form-control qty_tot" name="qty_tot" id="qty_tot"></td>
-                                        <td></td>
+                                        <td><input type="hidden" name="id_gd" id="id_gd" placeholder=0 class="form-control id_gd"  step="any" ></td>
                                         <td> <input type="text"class="form-control tot_amount" id="tot_amount" name="tot_amount"></td>
                                     </tr>
                                 </tbody>
@@ -431,7 +431,7 @@
     <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content" style="background-color: #1c3143; color: white">
             <div class="modal-header">
-                <h5 class="m-3">List Of Stock Items</h5>
+                <h5 class="m-3">List Of Stock Itemssss</h5>
                 <button type="button" class="close" data-dismiss="modal" aria-label="Close">
                     <span aria-hidden="true">&times;</span>
                 </button>
@@ -476,16 +476,14 @@
                     <a href="{% url 'godown_creation_crd'%}"><p style="text-align: right;">Create</p></a>
                     
                     <hr>
-                    <ul>
+                    <ul id="gallary">
                         
                         <li onclick="addgd('Primary')"><a href="" data-dismiss="modal" data-target="#item_sltd" data-toggle="modal">Primary</a></li>
                         <li onclick="addgd('Main Location')"><a href="" data-dismiss="modal" data-target="#item_sltd" data-toggle="modal">Main Location</a></li>
-                        {% for p in godown%}
                         
-                        <li id={{forloop.counter}}><a href="" data-dismiss="modal" data-target="#item_sltd" data-toggle="modal"><p  class="name" value="{{p.name}}"  onclick="addgd('{{p.name}}')"id="item_nm{{forloop.counter}}" name="item_nm" id ="item_nm">
-                            {{p.name}} <span style="margin-left: 100px;">{{p.quantity}}</span>
-                        </p></a></li>
-                        {% endfor %}
+                        
+                        
+                        
                     </ul>
                         
                     
@@ -829,6 +827,7 @@
     }
     // #add add_item_row
     function additem(itm){
+        
         var row_no=document.getElementById("rowid").value
         
         
@@ -1217,9 +1216,20 @@
     }
 
     // add godown to gd modal
-    function addgd(gd_nm){
+    function addgd(element,x){
         
-        document.getElementById("gd_name").value=gd_nm 
+        
+        
+        document.getElementById("gd_name").value=element; 
+        document.getElementById("id_gd").value=x;
+        
+        
+        
+       
+        
+        
+
+        
         
     }
 
@@ -1227,6 +1237,8 @@
     amount //   tot_amount
     function amount_calcu() {
         $('#tab_godown tbody tr').each(function () {
+            elm=document.getElementById("item_nm");
+            elm.remove();
             var html = $(this).html();
             if (html != '') {
                 var qty = $(this).find('.quantitys').val();
@@ -1247,6 +1259,8 @@
                     if (inpusts!=0){
                         document.getElementById("tot_amount").focus();
                         var input = document.getElementById("tot_amount");
+                        var id_gd = document.getElementById("id_gd").value;
+                        var qty_gdm=document.getElementById("qty_tot").value
                         input.addEventListener("keypress", function(event) {
                             if (event.key == "Enter") {
                                 
@@ -1254,12 +1268,31 @@
                                 
                                 $('#item_sltd').modal('hide');
                                 tb_clacu(qty,price)
+
+                                $.ajax({
+                                    type: "GET",
+                                    url: "{% url 'qty_add' %}",
+                                    data: {
+                                        id_gd : id_gd,
+                                        qty_gdm:qty_gdm,
+                                    
+                                    },
+                                    success:function(response){
+                                            console.log(response)
+                                            
+                                            }
+                                            
+                                        
+                                    }
+                                        
+                                );
                                 document.getElementById("gd_name").value="" 
                                 document.getElementById("quantitys").value=""
                                 document.getElementById("rates").value=""
                                 document.getElementById("amount").value=""
                                 document.getElementById("qty_tot").value=""
                                 document.getElementById("tot_amount").value=""
+                                document.getElementById("id_gd").value=""
                                 
                                 
                                    
@@ -1571,7 +1604,15 @@
             },
             success:function(response){
                     console.log(response)
-                    godown = response.lst_data
+                    godown = response.lst_data;
+                    // var gal = document.getElementById("gallary")
+                    
+                    for (var {name: n, quantity: qty, id: no} of godown){
+                        
+                        $('#gallary').append(`<li><a href="" data-dismiss="modal" data-target="#item_sltd" data-toggle="modal"><p  class="name"  onclick="addgd('${n}', '${no}')" value="${n}" name="item_nm" id ="item_nm">${n} <span style='margin-left:200px'>${qty}</span> </p></a></li>`)
+                        // gal.append(n + qty );
+                    }
+                    
                 
             }
                   

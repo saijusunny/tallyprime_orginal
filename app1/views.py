@@ -5499,8 +5499,11 @@ def stock_items_creation(request):
             per=request.POST['per']
             value=request.POST['value']
             
+            gd=Godown_Items.objects.all().last()
+            gsd=Godown_Items.objects.get(id=gd.id)
+
             crt=stock_itemcreation(name=nm,alias=alias,under_id=under,units=units,batches=batches,trackdate=trackdate,expirydate=expirydate,typ_sply=typ_sply,
-            gst_applicable=gst_applicable,set_alter=set_alter,rate_of_duty=rate_of_duty,quantity=quantity,rate=rate,per=per,value=value)
+            gst_applicable=gst_applicable,set_alter=set_alter,rate_of_duty=rate_of_duty,quantity=quantity,rate=rate,per=per,value=value,godown=gsd)
             crt.save()
             return redirect('load_stock_item_creation')
         return render(request,'stock_item_creation.html',{'grp':grp,'unt':unt,'u':u,'tally':tally})
@@ -12583,17 +12586,73 @@ def data_fetch(request):
             return redirect('/')
         mname =request.GET.get('mnames')
         cmp1 = Companies.objects.get(id=request.session['t_id'])
-        print(mname)
+       
         godowns = stock_itemcreation.objects.get(name=mname)
-        print("godowns.godown_id")
-        print(godowns.godown_id)
+       
+        
         fetch_data = Godown_Items.objects.filter(comp=cmp1, id=godowns.godown_id).values()
         lst_data=[]
         for i in fetch_data:
-            print(i)
+           
             lst_data.append(i)
-        print(lst_data)
+      
         return JsonResponse({"status":" not","lst_data":lst_data})
     return redirect('/')
 
+def qty_add(request):
+    try:
+        if 't_id' in request.session:
+            if request.session.has_key('t_id'):
+                uid = request.session['t_id']
+            else:
+                return redirect('/')
+            id_gd =request.GET.get('id_gd') 
+            qty_gdm =request.GET.get('qty_gdm')
+            cmp1 = Companies.objects.get(id=request.session['t_id'])
+            fetch_data = Godown_Items.objects.get(comp=cmp1, id=id_gd)
+            fetch_data.quantity=int(fetch_data.quantity)+int(qty_gdm)
+            fetch_data.save()
+
+            return JsonResponse({"status":" not"})
+        return redirect('/')
+    except:
+        pass
+
+
+def sv_godown_itm(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+            company=Companies.objects.get(id=t_id)
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        gd=CreateGodown.objects.all()
+        if request.method=='POST': 
+            names=request.POST['under_name']
+         
+            quantity=request.POST['quantity']
+            rate=request.POST['rate']
+            per=request.POST['per']
+            value=request.POST['value']
+            gdcrt=Godown_Items(name=names,quantity=quantity,rate=rate,per=per,value=value,comp=company)
+            gdcrt.save()
+            
+            return redirect('load_stock_item_creation')
+        return redirect('load_stock_item_creation')
+    return redirect('/')  
+
+
+
+
+def stock_godowncrd(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        gd=CreateGodown.objects.all()
+        return render(request,'stock_godowncrd.html',{'gd':gd,'tally':tally})
+    return redirect('/')
 
