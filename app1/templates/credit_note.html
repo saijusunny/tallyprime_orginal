@@ -476,15 +476,10 @@
                     <a href="{% url 'godown_creation_crd'%}"><p style="text-align: right;">Create</p></a>
                     
                     <hr>
-                    <ul id="gallary">
-                        
-                        <li onclick="addgd('Primary')"><a href="" data-dismiss="modal" data-target="#item_sltd" data-toggle="modal">Primary</a></li>
-                        <li onclick="addgd('Main Location')"><a href="" data-dismiss="modal" data-target="#item_sltd" data-toggle="modal">Main Location</a></li>
-                        
-                        
-                        
-                        
-                    </ul>
+                    <div id="li_data_gd">
+
+                    </div>
+                    
                         
                     
 
@@ -1237,7 +1232,7 @@
     amount //   tot_amount
     function amount_calcu() {
         $('#tab_godown tbody tr').each(function () {
-            elm=document.getElementById("item_nm");
+            elm=document.getElementById("gallary");
             elm.remove();
             var html = $(this).html();
             if (html != '') {
@@ -1609,7 +1604,12 @@
                     
                     for (var {name: n, quantity: qty, id: no} of godown){
                         
-                        $('#gallary').append(`<li><a href="" data-dismiss="modal" data-target="#item_sltd" data-toggle="modal"><p  class="name"  onclick="addgd('${n}', '${no}')" value="${n}" name="item_nm" id ="item_nm">${n} <span style='margin-left:200px'>${qty}</span> </p></a></li>`)
+                        $('#li_data_gd').append(`
+                        <ul id="gallary">
+                        
+                        <li onclick="addgd('Primary')"><a href="" data-dismiss="modal" data-target="#item_sltd" data-toggle="modal">Primary</a></li>
+                        <li onclick="addgd('Main Location')"><a href="" data-dismiss="modal" data-target="#item_sltd" data-toggle="modal">Main Location</a></li>
+                        <li><a href="" data-dismiss="modal" data-target="#item_sltd" data-toggle="modal"><p  class="name"  onclick="addgd('${n}', '${no}')" value="${n}" name="item_nm" id ="item_nm">${n} <span style='margin-left:200px'>${qty}</span> </p></a></li> </ul>`)
                         // gal.append(n + qty );
                     }
                     
