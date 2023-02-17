@@ -813,13 +813,22 @@ urlpatterns = [
     path('itm_amount/',views.itm_amount,name='itm_amount'),
     path('saveparty/',views.saveparty,name='saveparty'), 
 
-    # saiju lates
     path('sv_godown/',views.sv_godown,name='sv_godown'),
     path('data_fetch/',views.data_fetch,name='data_fetch'),
     path('qty_add/',views.qty_add,name='qty_add'), 
     path('sv_godown_itm/',views.sv_godown_itm,name='sv_godown_itm'),
     path('stock_godowncrd/',views.stock_godowncrd,name='stock_godowncrd'),
-    
+
+    # Debit Note
+
+    path('debits_note/',views.debits_note,name='debits_note'),
+  
+    path('create_debit/',views.create_debit,name='create_debit'),
+    path('crt_ledg_dbt/',views.crt_ledg_dbt,name='crt_ledg_dbt'),
+    path('create_ledger_debt/',views.create_ledger_debt,name='create_ledger_debt'),
+    path('savrecdet_dbt/',views.savrecdet_dbt,name='savrecdet_dbt'), 
+    path('saveparty_dbt/',views.saveparty_dbt,name='saveparty_dbt'),
+
     path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
               
                          

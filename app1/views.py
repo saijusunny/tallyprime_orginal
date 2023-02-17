@@ -12656,3 +12656,381 @@ def stock_godowncrd(request):
         return render(request,'stock_godowncrd.html',{'gd':gd,'tally':tally})
     return redirect('/')
 
+
+
+
+# debit Note--------------------------------------------------------------------------------
+
+def debits_note(request):
+    
+    t_id = request.session['t_id']
+
+    cmp1 = Companies.objects.get(id=t_id)
+    # credit_num=credit_note.objects.get(comp=cmp1).
+    icrd=debit_note.objects.filter(comp=cmp1).aggregate(Max('debit_no')).get('debit_no__max')
+    if icrd ==None:
+        crd_num=1
+    else:
+        crd_num=icrd+1
+
+    current_year = date.today().year
+        
+    next_year = current_year+1
+    previous_year = current_year-1
+    financial_year="01-Apr-"+str(previous_year)
+
+    now = datetime.now()
+    dt_nm=now.strftime("%A")
+    
+    try:
+        setups=Voucher.objects.get(company=cmp1, voucher_type="Debit_Note")
+
+        setup_no=setups.voucherNumber
+        setup_nar=setups.voucherNarration
+    except:
+        setup_no=" "
+        setup_nar=" "
+   
+    
+    ldg=tally_ledger.objects.filter(company=cmp1,under__in=["Bank_Accounts" , "Cash_in_Hand" , "Sundry_Debtors" , "Sundry_Creditors" , "Branch_Divisions"])
+    
+    ldg1=tally_ledger.objects.filter(company=cmp1,under="Sales_Account")
+    item = stock_itemcreation.objects.all() 
+    godown = Godown_Items.objects.filter(comp=cmp1) 
+    context = {'cmp1': cmp1,'item':item,'ldg':ldg,"ldg1":ldg1,"crd_num":crd_num,"financial_year":financial_year,"dt_nm":dt_nm,"godown":godown, "setup_no":setup_no,"setup_nar":setup_nar,'now':now} 
+    return render(request,'debit_note.html',context)
+
+
+
+def create_debit(request):
+    
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            uid = request.session['t_id']
+        else:
+            return redirect('/')
+        cmp1 = Companies.objects.get(id=request.session['t_id'])
+        if request.method == 'POST':
+          
+            try:
+                notes=request.POST['Note']
+            except:
+                notes=''
+            
+                
+
+            
+            idss = debit_note.objects.all().last()
+         
+            created = debit_note.objects.filter(sdebitid=idss.sdebitid).update(customer = request.POST['customer'],debitdate=date.today(),ledger_acc=request.POST['ledger_account'],subtotal=request.POST['subtotal'],note=notes,quantity=request.POST['quantity'],grandtotal=request.POST['grandtotal'],)
+
+
+            pdebit=debit_note.objects.get(sdebitid=idss.sdebitid)
+
+            
+            pdebit.debit_no = pdebit.sdebitid
+            pdebit.save()
+
+            ldg1=tally_ledger.objects.get(company=cmp1,name=pdebit.customer)
+            cr_bal=float(ldg1.opening_blnc)+float(pdebit.grandtotal)
+            dr_bal=float(pdebit.grandtotal)-float(ldg1.opening_blnc)
+            if ldg1.opening_blnc_type=="Cr":
+                ldg1.opening_blnc=cr_bal
+                
+            else:
+                ldg1.opening_blnc=dr_bal
+               
+                if float(pdebit.grandtotal)>float(dr_bal):
+                    ldg1.opening_blnc_type="Dr"
+                else:
+                    ldg1.opening_blnc_type="Cr"
+             
+                
+
+            ldg1.save()
+            
+
+            
+
+            ldg=tally_ledger.objects.get(company=cmp1,name=pdebit.ledger_acc)
+            ldg.opening_blnc=float(ldg.opening_blnc)+float(pdebit.grandtotal)
+            ldg.save()
+
+            items = request.POST.getlist("items[]")
+            quantity = request.POST.getlist("quantity[]")
+            price = request.POST.getlist("price[]")
+            total = request.POST.getlist("total[]")
+
+            pdeb=debit_note.objects.get(sdebitid=pdebit.sdebitid)
+
+            if len(items)==len(quantity)==len(price)==len(total) and items and quantity and price and total:
+               
+                mapped=zip(items,quantity,price,total)
+                mapped=list(mapped)
+                print(mapped)
+                for ele in mapped:
+                    porderAdd,created = debit_item.objects.get_or_create(items = ele[0],quantity=ele[1],price=ele[2],total=ele[3],sdebit=pdeb)
+
+                    
+    
+            return redirect('debits_note')
+        
+        return redirect('debits_note')
+    return redirect('/') 
+
+
+def crt_ledg_dbt(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        # grp=tally_group.objects.all()
+        grp=tally_group.objects.filter(company=t_id)
+        return render(request,'ledger_debit.html',{'grp' : grp,'tally':tally})
+    return redirect('debits_note')
+   
+
+
+def create_ledger_debt(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            t_id = request.session['t_id']
+        else:
+            return redirect('/')
+        tally = Companies.objects.filter(id=t_id)
+        if request.method=='POST':
+            nm=request.POST.get('name')
+            als=request.POST.get('alias')
+            under=request.POST.get('under')
+            mname=request.POST.get('mailingname')
+            adr=request.POST.get('address')
+            st=request.POST.get('state')
+            cntry=request.POST.get('country')
+            pin=request.POST.get('pincode')
+            pno=request.POST.get('pan_no')
+            bdetls=request.POST.get('bank_details')
+            rtype=request.POST.get('registration_type')
+            gst_uin=request.POST.get('gst_uin')
+            opnbn=request.POST.get('opening_blnc')
+            cd=request.POST.get('opening_blnc_type')
+            spdl=request.POST.get('set_odl')
+            achnm=request.POST.get('ac_holder_nm')
+            acno=request.POST.get('acc_no')
+            ifsc=request.POST.get('ifsc_code')
+            scode=request.POST.get('swift_code')
+            bn=request.POST.get('bank_name')
+            brnch=request.POST.get('branch')
+            sacbk=request.POST.get('SA_cheque_bk')
+            ecp=request.POST.get('Echeque_p')
+            sacpc=request.POST.get('SA_chequeP_con')
+
+            typofled=request.POST.get('type_of_ledger')
+            rometh=request.POST.get('rounding_method')
+            rolmt=request.POST.get('rounding_limit')
+
+            typdutytax=request.POST.get('type_duty_tax')
+            taxtyp=request.POST.get('tax_type')
+            valtype=request.POST.get('valuation_type')
+            rateperu=request.POST.get('rate_per_unit')
+            percalc=request.POST.get('percentage_of_calcution')
+            rondmethod=request.POST.get('rond_method')
+            roimlit=request.POST.get('rond_limit')
+
+            gstapplicbl=request.POST.get('gst_applicable')
+            sagatdet=request.POST.get('setalter_gstdetails')
+            typsupply=request.POST.get('type_of_supply')
+            asseval=request.POST.get('assessable_value')
+            appropto=request.POST.get('appropriate_to')
+            methcalcu=request.POST.get('method_of_calculation')
+
+            balbillbybill=request.POST.get('balance_billbybill')
+            credperiod=request.POST.get('credit_period')
+            creditdaysvouch=request.POST.get('creditdays_voucher')
+            
+            ldr=tally_ledger(name=nm,alias=als,under=under,mname=mname,address=adr,state=st,country=cntry,
+                            pincode=pin,pan_no=pno,bank_details=bdetls,registration_type=rtype,gst_uin=gst_uin,
+                            opening_blnc=opnbn,set_odl=spdl,ac_holder_nm=achnm,acc_no=acno,ifsc_code=ifsc,swift_code=scode,
+                            bank_name=bn,branch=brnch,SA_cheque_bk=sacbk,Echeque_p=ecp,SA_chequeP_con=sacpc,
+                            type_of_ledger=typofled,rounding_method=rometh,rounding_limit=rolmt,type_duty_tax=typdutytax,tax_type=taxtyp,
+                            valuation_type=valtype,rate_per_unit=rateperu,percentage_of_calcution=percalc,rond_method=rondmethod,rond_limit=roimlit,
+                            gst_applicable=gstapplicbl,setalter_gstdetails=sagatdet,type_of_supply=typsupply,assessable_value=asseval,
+                            appropriate_to=appropto,method_of_calculation=methcalcu,balance_billbybill=balbillbybill,credit_period=credperiod,
+                            creditdays_voucher=creditdaysvouch,opening_blnc_type=cd,company_id=t_id)
+            
+            ldr.save()
+            if under =="Bank Accounts":
+                group_under = Account_Books_Group_under.objects.all()
+                ad =""
+                for i in group_under:
+                    if i.group_under_Name == under:
+
+                        ad = under
+
+                        gup=Account_Books_Group_under.objects.get(group_under_Name=under)
+
+                        account_book_ledger = Account_Books_Ledger()
+                        account_book_ledger.ledger_name = nm
+                        account_book_ledger.group_under = gup
+                        account_book_ledger.ledger_opening_bal = opnbn
+                        account_book_ledger.ledger_opening_bal_type = type
+                        account_book_ledger.save()
+                
+                
+                if ad != under:
+                    account_book_group_under = Account_Books_Group_under()
+            
+                    account_book_group_under.group_under_Name =under
+                    account_book_group_under.save()
+
+                    account_book_ledger = Account_Books_Ledger()
+                    account_book_ledger.ledger_name = nm
+                    gu =Account_Books_Group_under.objects.get(id=account_book_group_under.id)
+                    account_book_ledger.group_under = gu
+                    account_book_ledger.ledger_opening_bal = opnbn
+                    account_book_ledger.ledger_opening_bal_type = type
+                    account_book_ledger.save()
+
+
+            if under =="Cash in Hand":
+                group_under = Account_Books_Group_under.objects.all()
+                ad =""
+                for i in group_under:
+                    if i.group_under_Name == under:
+
+                        ad = under
+
+                        gup=Account_Books_Group_under.objects.get(group_under_Name=under)
+
+                        account_book_ledger = Account_Books_Ledger()
+                        account_book_ledger.ledger_name = nm
+                        account_book_ledger.group_under = gup
+                        account_book_ledger.ledger_opening_bal = opnbn
+                        account_book_ledger.ledger_opening_bal_type = type
+                        account_book_ledger.save()
+                
+                
+                if ad != under:
+                    account_book_group_under = Account_Books_Group_under()
+            
+                    account_book_group_under.group_under_Name =under
+                    account_book_group_under.save()
+
+                    account_book_ledger = Account_Books_Ledger()
+                    account_book_ledger.ledger_name = nm
+                    gu =Account_Books_Group_under.objects.get(id=account_book_group_under.id)
+                    account_book_ledger.group_under = gu
+                    account_book_ledger.ledger_opening_bal = opnbn
+                    account_book_ledger.ledger_opening_bal_type = type
+                    account_book_ledger.save()
+            # return render(request,'ledgers.html',{'tally':tally})
+            return redirect("debits_note")
+    return redirect('/') 
+
+
+def savrecdet_dbt(request):
+
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            uid = request.session['t_id']
+        else:
+            return redirect('/') 
+        cmp1 = Companies.objects.get(id=request.session['t_id'])
+        idss = debit_note.objects.all().last()
+        try:
+            crd_num= int(idss.sdebitid)+1
+        except:
+            crd_num=1
+        try:
+            track_no= request.GET.get('track_no')
+            dis_doc_no= request.GET.get('dis_doc_no')
+            dis_through= request.GET.get('dis_through')
+            dis_desti= request.GET.get('dis_desti')
+            car_nm_ag= request.GET.get('car_nm_ag')
+            bil_lading= request.GET.get('bil_lading')
+            mvd_no= request.GET.get('mvd_no')
+            date_dis= request.GET.get('date_dis')
+            inv_no = request.GET.get('inv_no')
+            inv_date = request.GET.get('inv_date')
+
+            
+
+            pdebit = debit_note(tracking_no=track_no,
+                                        dis_doc_no=dis_doc_no,
+                                        dis_thr=dis_through,
+                                        destination=dis_desti,
+                                        carrie_nmag=car_nm_ag,
+                                        billlr_no=bil_lading,
+                                        mt_vh_no=mvd_no,
+                                        date=date_dis,
+                                        inv_no=inv_no,
+                                        inv_date=inv_date,
+                                        comp=cmp1,
+                                    )
+            pdebit.save()
+        except:
+           
+            pdebit = debit_note(debit_no=crd_num,
+                                        comp=cmp1,
+                                    )
+            pdebit.save()
+        
+
+        global crd_id_crd
+        crd_id_crd=pdebit.sdebitid
+
+        customer = request.GET.get('customer')
+     
+        items=tally_ledger.objects.get(company=cmp1,name=customer)
+      
+     
+        name = items.name
+        mname = items.mname
+        address = items.address
+        state = items.state
+        country = items.country
+        reg_type = items.registration_type
+        gst_uin = items.gst_uin
+        cr_bal = items.gst_uin
+        gst_uin = items.gst_uin
+        cr_bal = items.gst_uin
+        opn_bal = items.opening_blnc
+        blnc_type = items.opening_blnc_type
+        bal_amount=str(opn_bal)+str(blnc_type)
+        
+        
+        
+
+        return JsonResponse({"status":" not","name":name,"mname":mname,"address":address,"state":state,"country":country,"reg_type":reg_type,"gst_uin":gst_uin,"bal_amount":bal_amount})
+    return redirect('/')
+
+def saveparty_dbt(request):
+    if 't_id' in request.session:
+        if request.session.has_key('t_id'):
+            uid = request.session['t_id']
+        else:
+            return redirect('/')
+        cmp1 = Companies.objects.get(id=request.session['t_id'])
+
+        try:
+        
+            mname =request.GET.get('mname')
+            address =request.GET.get('address')
+            state =request.GET.get('state')
+            country =request.GET.get('country')
+            reg_type =request.GET.get('reg_type')
+            gst_uin =request.GET.get('gst_uin')
+            pl_suply =request.GET.get('pl_suply')
+           
+            
+        except:
+            pass
+        
+       
+        created = credit_note.objects.filter(screditid=crd_id_crd).update(address=address,  state=state, country=country, reg_type=reg_type, gst_uin=gst_uin, pl_suply=pl_suply, mname=mname,)
+
+       
+
+        return JsonResponse({"status":" not"})
+    return redirect('/')
