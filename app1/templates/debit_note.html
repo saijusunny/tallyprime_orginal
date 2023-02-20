@@ -253,7 +253,7 @@
             <div class="modal-body">
                 <div class="card p-3 m-3">
                     
-                    <a href="{% url 'crt_sl_ledg'%}"><p style="text-align: right;">Create</p></a>
+                    <a href="{% url 'crt_dbt_ledg'%}"><p style="text-align: right;">Create</p></a>
                     <hr>
                     <ul>
                         
@@ -272,7 +272,7 @@
 </div>
 
 <div class="modal fade" id="view">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content" style="background-color: #1c3143; color: white">
             <div class="modal-header">
                 <h5 class="m-3">Receipt Details</h5>
@@ -439,7 +439,7 @@
             <div class="modal-body">
                 <div class="card p-3 m-3">
                     
-                    <a href="{% url 'create_items_crd'%}"><p style="text-align: right;">Create</p></a>
+                    <a href="{% url 'create_items_dbt'%}"><p style="text-align: right;">Create</p></a>
                     
                     <hr>
                     <ul>
@@ -473,7 +473,7 @@
             <div class="modal-body">
                 <div class="card p-3 m-3">
                     
-                    <a href="{% url 'godown_creation_crd'%}"><p style="text-align: right;">Create</p></a>
+                    <a href="{% url 'godown_creation_dbt'%}"><p style="text-align: right;">Create</p></a>
                     
                     <hr>
                     <div id="li_data_gd">
@@ -494,7 +494,7 @@
                     
 
 <div class="modal fade" id="view_acc">
-    <div class="modal-dialog modal-lg">
+    <div class="modal-dialog modal-lg modal-dialog-scrollable">
         <div class="modal-content" style="background-color: #1c3143; color: white">
             <div class="modal-header">
                 <h5 class="m-3">Party Details</h5>
@@ -830,7 +830,7 @@
             document.getElementById("product").value=itm 
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -847,7 +847,7 @@
             document.getElementById("product1").value=itm  
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -865,7 +865,7 @@
             document.getElementById("product2").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -883,7 +883,7 @@
             document.getElementById("product3").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -901,7 +901,7 @@
             document.getElementById("product4").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -918,7 +918,7 @@
             document.getElementById("product5").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -936,7 +936,7 @@
             document.getElementById("product6").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -954,7 +954,7 @@
             document.getElementById("product7").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -972,7 +972,7 @@
             document.getElementById("product8").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -990,7 +990,7 @@
             document.getElementById("product9").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1008,7 +1008,7 @@
             document.getElementById("product10").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1026,7 +1026,7 @@
             document.getElementById("product11").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1044,7 +1044,7 @@
             document.getElementById("product12").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1062,7 +1062,7 @@
             document.getElementById("product13").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1080,7 +1080,7 @@
             document.getElementById("product14").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1098,7 +1098,7 @@
             document.getElementById("product15").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1116,7 +1116,7 @@
             document.getElementById("product16").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1134,7 +1134,7 @@
             document.getElementById("product17").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1152,7 +1152,7 @@
             document.getElementById("product18").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1170,7 +1170,7 @@
             document.getElementById("product19").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1188,7 +1188,7 @@
             document.getElementById("product20").value=itm
             $.ajax({
             type: "GET",
-            url: "{% url 'itm_amount' %}",
+            url: "{% url 'itm_amount_dbt' %}",
             data: {
                 itms : itm,
                 
@@ -1266,7 +1266,7 @@
 
                                 $.ajax({
                                     type: "GET",
-                                    url: "{% url 'qty_add' %}",
+                                    url: "{% url 'qty_add_dbt' %}",
                                     data: {
                                         id_gd : id_gd,
                                         qty_gdm:qty_gdm,
@@ -1592,7 +1592,7 @@
         itemaaa=document.getElementById(prd_nm).value;
         $.ajax({
             type: "GET",
-            url: "{% url 'data_fetch' %}",
+            url: "{% url 'data_fetch_dbt' %}",
             data: {
                 mnames : itemaaa,
             

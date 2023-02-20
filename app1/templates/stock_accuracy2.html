@@ -87,38 +87,34 @@
                 </div>
             </center>
             <div class="table-responsive-sm" style="background-color:rgba(0,0,0,0.4);">
-                <form action="{% url 'sv_godown'%}" method="POST">
-                    {% csrf_token %}
-                    <Table class="w-100 table text-center" border="1">
-                        <tr>
-                            <!-- <th>Sl.no</th> -->
-                            <th>Godown</th>
-                            <th>Quantity</th>
-                            <th>Rate</th>
-                            <th>Per</th>
-                            <th>Amount</th>
-                            <th>Accept</th>
+                <Table class="w-100 table text-center" border="1">
+                    <tr>
+                        <!-- <th>Sl.no</th> -->
+                        <th>Godown</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Per</th>
+                        <th>Amount</th>
+                        <th>Accept</th>
+        
+                    </tr>
+                    
+                    <tr>
+                      <td> 
+                        <input type="text" id="under" name="under_name" class="form-control" onclick="showform();">
+                        </td>
             
-                        </tr>
-                        
-                        <tr>
-                        <td> 
-                            <input type="text" id="under" name="under_name" class="form-control" onclick="showform();">
-                            </td>
-                            
-                        <td><input type="text" class="w-100 form-control" id="quantity" name="quantity" onblur="passquantity()"> </td>
-                        <td> <input type="text" class="w-100 form-control" id="rate" name="rate"  onblur="passrate()"></td>
-                        <td><input type="text" class="w-100 form-control" id="per" name="per"  onblur="passper()"> </td>
-                        <td> <input type="text" class="w-100 form-control" id="value" name="value" onblur="passvalue()"></td>
-                        
-                        
-                        <td><a href="javascript:history.go(-1);"><input type="submit" class="btn btn-info" value="Accept"></a></td> 
-                
-                        </tr>
-                        
-                        
-                    </Table>
-                </form>
+                      <td><input type="text" class="w-100 form-control" id="quantity" onblur="passquantity()"> </td>
+                      <td> <input type="text" class="w-100 form-control" id="rate" onblur="passrate()"></td>
+                      <td><input type="text" class="w-100 form-control" id="per" onblur="passper()"> </td>
+                      <td> <input type="text" class="w-100 form-control" id="value" onblur="passvalue()"></td>
+                      
+                      <td><a href="javascript:history.go(-1);"><button class="btn btn-info">Accept</button></a></td> 
+            
+                    </tr>
+                    
+                    
+                </Table>
             </div>
             
         </div>

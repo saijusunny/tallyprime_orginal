@@ -822,12 +822,23 @@ urlpatterns = [
     # Debit Note
 
     path('debits_note/',views.debits_note,name='debits_note'),
-  
     path('create_debit/',views.create_debit,name='create_debit'),
     path('crt_ledg_dbt/',views.crt_ledg_dbt,name='crt_ledg_dbt'),
     path('create_ledger_debt/',views.create_ledger_debt,name='create_ledger_debt'),
     path('savrecdet_dbt/',views.savrecdet_dbt,name='savrecdet_dbt'), 
     path('saveparty_dbt/',views.saveparty_dbt,name='saveparty_dbt'),
+    path('crt_dbt_ledg/',views.crt_dbt_ledg,name='crt_dbt_ledg'),
+    path('create_dbt_ledger/',views.create_dbt_ledger,name='create_dbt_ledger'),
+    path('create_items_dbt/',views.create_items_dbt,name='create_items_dbt'),
+    path('stock_items_creation_dbt/',views.stock_items_creation_dbt,name='stock_items_creation_dbt'),
+    path('godown_creation_dbt/',views.godown_creation_dbt,name='godown_creation_dbt'),
+    path('godown_dbt/',views.godown_dbt,name='godown_dbt'), 
+    path('itm_amount_dbt/',views.itm_amount_dbt,name='itm_amount_dbt'),
+    path('sv_godown_dbt/',views.sv_godown_dbt,name='sv_godown_dbt'),
+    path('data_fetch_dbt/',views.data_fetch_dbt,name='data_fetch_dbt'),
+    path('qty_add_dbt/',views.qty_add_dbt,name='qty_add_dbt'), 
+    path('stock_accuracy_dbt/',views.stock_accuracy_dbt,name='stock_accuracy_dbt'),
+    
 
     path(r'^media/(?P<path>.*)$', serve,{'document_root': settings.MEDIA_ROOT}),
               
